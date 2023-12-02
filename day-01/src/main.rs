@@ -1,6 +1,4 @@
-#![allow(unused, dead_code)]
-use regex::{Regex, RegexSet};
-use std::{collections::HashMap, fs};
+use std::fs;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 struct CalibrationDigits {
@@ -44,10 +42,10 @@ fn detect_word_digits(row: &str) -> Vec<CalibrationDigits> {
 }
 
 fn detect_digits(row: &str) -> Vec<CalibrationDigits> {
-    let pattern = Regex::new(r"\d").unwrap();
-    pattern
-        .find_iter(row)
-        .map(|m| CalibrationDigits::new(m.start(), m.as_str().parse().unwrap()))
+    row.chars()
+        .enumerate()
+        .filter(|(_, c)| c.is_ascii_digit())
+        .map(|(i, c)| CalibrationDigits::new(i, c.to_digit(10).unwrap()))
         .collect()
 }
 
