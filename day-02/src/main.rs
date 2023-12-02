@@ -1,4 +1,3 @@
-#![allow(unused, dead_code)]
 use std::fs;
 
 use regex::Regex;
@@ -90,17 +89,6 @@ struct GameRecords(Vec<GameRecord>);
 impl GameRecords {
     fn new(records: Vec<GameRecord>) -> Self {
         Self(records)
-    }
-    fn max(&self) -> ColorRecord {
-        self.0
-            .iter()
-            .fold(ColorRecord::new(None, None, None), |acc, x| {
-                ColorRecord::new(
-                    acc.red.max(x.max().red),
-                    acc.green.max(x.max().green),
-                    acc.blue.max(x.max().blue),
-                )
-            })
     }
 
     fn iter(&self) -> impl Iterator<Item = &GameRecord> {
