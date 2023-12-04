@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use regex::Regex;
-use std::{cmp::Reverse, collections::HashSet, fs, rc::Rc};
+use std::{cmp::Reverse, collections::HashSet, fs};
 
 fn score(n_win: u32) -> u32 {
     if n_win < 1 {
@@ -9,31 +9,19 @@ fn score(n_win: u32) -> u32 {
     2_u32.pow(n_win - 1)
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 struct Scratchcard {
     id: Reverse<u32>,
-    win_num: Rc<HashSet<u32>>,
-    my_num: Rc<[u32]>,
-}
-
-impl PartialOrd for Scratchcard {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for Scratchcard {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.id.cmp(&other.id)
-    }
+    win_num: HashSet<u32>,
+    my_num: Vec<u32>,
 }
 
 impl Scratchcard {
     fn new(id: u32, win_num: Vec<u32>, my_num: Vec<u32>) -> Scratchcard {
         Scratchcard {
             id: Reverse(id),
-            win_num: Rc::new(win_num.into_iter().collect()),
-            my_num: Rc::from(my_num),
+            win_num: win_num.into_iter().collect(),
+            my_num,
         }
     }
 
