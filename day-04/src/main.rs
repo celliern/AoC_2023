@@ -142,7 +142,7 @@ mod tests {
 
     #[test]
     fn test_p2() {
-        let content = fs::read_to_string("data/test_input2.txt").unwrap();
+        let content = fs::read_to_string("data/test_input.txt").unwrap();
         let mut pile = Pile::parse(&content);
         assert_eq!(30, part02(&mut pile));
     }
