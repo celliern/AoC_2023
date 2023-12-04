@@ -61,6 +61,7 @@ impl Scratchcard {
     }
 }
 
+#[derive(Debug, Clone)]
 struct Pile {
     cards: Vec<Scratchcard>,
     duplicates: Vec<u32>,
@@ -122,9 +123,7 @@ fn main() {
     let content = fs::read_to_string("data/input.txt").unwrap();
     let pile = Pile::parse(&content);
     println!("Part 1: {}", part01(&pile));
-
-    let mut pile = pile;
-    println!("Part 2: {}", part02(&mut pile));
+    println!("Part 2: {}", part02(&mut pile.clone()));
 }
 
 #[cfg(test)]
