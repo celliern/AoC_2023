@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use itertools::Itertools;
 use kdam::tqdm;
 use rayon::prelude::*;
@@ -27,12 +26,6 @@ fn parse_seeds(input: String) -> Vec<usize> {
 
 fn process_seeds_raw(seeds: Vec<usize>) -> (usize, impl Iterator<Item = usize>) {
     (seeds.len(), seeds.into_iter())
-}
-
-fn process_seeds_range(seeds: Vec<usize>) -> (usize, impl Iterator<Item = usize>) {
-    let start_len: Vec<(usize, usize)> = seeds.into_iter().tuples::<(_, _)>().collect();
-    let total = start_len.iter().map(|(_, len)| len).sum::<usize>();
-    (total, start_len.into_iter().flat_map(|(a, b)| (a..a + b)))
 }
 
 const SEED_STEPS: [&str; 8] = [
@@ -190,23 +183,8 @@ impl Almanach {
             .min()
             .unwrap()
     }
+
     fn process_range(&self) -> usize {
-        let (total, seeds) = process_seeds_range(self.seeds.clone());
-        tqdm!(seeds, total = total)
-            .par_bridge()
-            .map(|src| self.get_dst(&src))
-            .min()
-            .unwrap()
-    }
-
-    fn reverse_process_raw(self) -> usize {
-        let src = tqdm!((1..).map(|dst| self.get_src(&dst)))
-            .find(|src| self.seeds.contains(src))
-            .unwrap();
-        self.get_dst(&src)
-    }
-
-    fn reverse_process_range(&self) -> usize {
         let intervals: Vec<Range<usize>> = self
             .seeds
             .clone()
@@ -237,7 +215,7 @@ fn main() {
 
     let almanach = Almanach::parse(input.clone());
     let now = Instant::now();
-    println!("Part 02: {}", almanach.reverse_process_range());
+    println!("Part 02: {}", almanach.process_range());
     println!("Time: {:?}", now.elapsed());
 }
 
@@ -255,18 +233,14 @@ mod tests {
     #[test]
     fn test_p1() {
         let input = fs::read_to_string("./data/test_input.txt").expect("failed to read input");
-        let almanach = Almanach::parse(input.clone());
+        let almanach = Almanach::parse(input);
         assert_eq!(almanach.process_raw(), 35);
-        let almanach = Almanach::parse(input.clone());
-        assert_eq!(almanach.reverse_process_raw(), 35);
     }
 
     #[test]
     fn test_p2() {
         let input = fs::read_to_string("./data/test_input.txt").expect("failed to read input");
-        let almanach = Almanach::parse(input.clone());
+        let almanach = Almanach::parse(input);
         assert_eq!(almanach.process_range(), 46);
-        let almanach = Almanach::parse(input.clone());
-        assert_eq!(almanach.reverse_process_range(), 46);
     }
 }
