@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use regex::Regex;
 use std::{cmp::Reverse, collections::HashSet, fs};
 
