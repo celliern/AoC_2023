@@ -136,19 +136,20 @@ impl Field {
         Some((neighbor, next_dir))
     }
 
-    fn startpos2startdir(&self, start: &Pipe) -> Vec<(&Pipe, Direction)> {
+    fn startpos2startdir(&self, start: &Pipe) -> (&Pipe, Direction) {
         let directions = [
             Direction::North,
             Direction::South,
             Direction::East,
             Direction::West,
         ];
-        let directions: Vec<(&Pipe, Direction)> = directions
+        let (neighbor, direction): (&Pipe, Direction) = directions
             .into_iter()
             .filter_map(|dir| self.get_next_step(start, dir))
-            .collect();
+            .next()
+            .unwrap();
 
-        directions
+        (neighbor, direction)
     }
 
     fn follow_paths(&self, p: &Pipe, dir: Direction) -> Vec<Pipe> {
@@ -185,15 +186,13 @@ impl Field {
 
 fn part_1(field: &Field) -> usize {
     let start_pos = field.find_start().unwrap();
-    let dirs = field.startpos2startdir(start_pos);
-    let (p, dir) = dirs[0];
+    let (p, dir) = field.startpos2startdir(start_pos);
     field.follow_paths(p, dir).len() / 2 + 1
 }
 
 fn part_2(field: &Field) -> usize {
     let start_pos = field.find_start().unwrap();
-    let dirs = field.startpos2startdir(start_pos);
-    let (p, dir) = dirs[0];
+    let (p, dir) = field.startpos2startdir(start_pos);
     let path = field.follow_paths(p, dir);
     field.n_pipes_in_path(&path)
 }
